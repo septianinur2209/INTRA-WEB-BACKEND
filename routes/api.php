@@ -22,11 +22,13 @@ Route::prefix('auth')->group(function () {
 Route::prefix('setting')->middleware(JwtMiddleware::class)->group(function () {
 
     Route::prefix('roles')->name('roles.')->controller(RoleController::class)->group(function () {
-        Route::get('/show', 'index')->name('index');
-        Route::get('/detail/{id}', 'show')->name('show');
+        Route::post('/show', 'index')->name('index');
+        Route::post('/filter', 'dropdown')->name('dropdown');
+        Route::get('/detail/{id}', 'detail')->name('detail');
         Route::post('/create', 'store')->name('store');
         Route::put('/update/{id}', 'update')->name('update');
         Route::delete('/delete/{id}', 'destroy')->name('destroy');
+        Route::post('/export', 'export')->name('export');
     });
 
 });

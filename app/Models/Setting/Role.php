@@ -5,6 +5,7 @@ namespace App\Models\Setting;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Role extends Model
 {
@@ -22,6 +23,18 @@ class Role extends Model
         'slug',
         'status'
     ];
+
+    public $timestamps = true;
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+    }
 
     public function user()
     {

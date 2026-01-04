@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Setting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Setting\RoleService;
-use Exception;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\Setting\RoleRequest;
+use Throwable;
 
 class RoleController extends Controller
 {
@@ -16,57 +18,140 @@ class RoleController extends Controller
         $this->roleService = $roleService;
     }
 
-    public function index()
-    {
-        $roles = $this->roleService->getAllRoles();
-        return response()->json($roles);
-    }
-
-    public function show($id)
+    public function index(Request $request, $perPage = 10)
     {
         try {
-            $role = $this->roleService->getRoleById($id);
-            return response()->json($role);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            $filters = $request->only(['start','length','status','name','slug','search']);
+
+            $result = $this->roleService->paginateWithFilter($filters);
+
+            return ResponseHelper::success(
+                200,
+                'Roles retrieved successfully',
+                [
+                    'recordsTotal' => $result['recordsTotal'],
+                    'recordsFiltered' => $result['recordsFiltered'],
+                    'data' => $result['data']
+                ]
+            );
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                500,
+                $e
+            );
         }
     }
 
-    public function store(Request $request)
+    public function dropdown(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:s_roles,slug',
-            'status' => 'required|boolean'
-        ]);
+        try {
+            $filters = $request->only(['column','name','slug']);
+            $data = $this->roleService->getDropdown($filters);
 
-        $role = $this->roleService->createRole($request->only('name','slug','status'));
-        return response()->json($role, 201);
+            return ResponseHelper::success(
+                200,
+                'Dropdown data retrieved successfully',
+                $data
+            );
+        } catch (\Throwable $e) {
+            return ResponseHelper::error(
+                500,
+                $e,
+                'Failed to get dropdown data'
+            );
+        }
     }
 
-    public function update(Request $request, $id)
+    public function detail($id)
     {
-        $request->validate([
-            'name' => 'sometimes|required|string',
-            'slug' => "sometimes|required|string|unique:s_roles,slug,$id",
-            'status' => 'sometimes|required|boolean'
-        ]);
-
         try {
-            $role = $this->roleService->updateRole($id, $request->only('name','slug','status'));
-            return response()->json($role);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            $role = $this->roleService->getById($id);
+
+            return ResponseHelper::success(
+                200,
+                'Role retrieved successfully',
+                $role
+            );
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                404,
+                $e,
+                'Role not found'
+            );
+        }
+    }
+
+    public function store(RoleRequest $request)
+    {
+        try {
+            $role = $this->roleService->create($request->validated());
+
+            return ResponseHelper::success(
+                201,
+                'Role created successfully',
+                $role
+            );
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                500,
+                $e
+            );
+        }
+    }
+
+    public function update(RoleRequest $request, $id)
+    {
+        try {
+            $role = $this->roleService->update($id, $request->validated());
+
+            return ResponseHelper::success(
+                200,
+                'Role updated successfully',
+                $role
+            );
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                404,
+                $e,
+                'Role not found'
+            );
         }
     }
 
     public function destroy($id)
     {
         try {
-            $this->roleService->deleteRole($id);
-            return response()->json(['message' => 'Role deleted']);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            $this->roleService->delete($id);
+
+            return ResponseHelper::success(
+                200,
+                'Role deleted successfully',
+                null
+            );
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                404,
+                $e,
+                'Role not found'
+            );
+        }
+    }
+
+    public function export(Request $request)
+    {
+        try {
+            $filters = $request->only(['status', 'name', 'slug', 'search']);
+            $fileName = 'roles_' . date('Ymd_His') . '.xlsx';
+
+            $filePath = $this->roleService->export($filters, $fileName);
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+        } catch (Throwable $e) {
+            return ResponseHelper::error(
+                500,
+                $e,
+                'Failed to export roles'
+            );
         }
     }
 }

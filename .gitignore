@@ -17,6 +17,7 @@ yarn-error.log
 yarn-debug.log
 package-lock.json
 yarn.lock
+composer.lock
 
 # Laravel IDE Helper
 /_ide_helper.php
