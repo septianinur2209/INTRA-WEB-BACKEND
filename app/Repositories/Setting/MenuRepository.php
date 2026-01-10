@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Setting;
 
-use App\Models\Setting\Role;
+use App\Models\Setting\Menu;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use Rap2hpoutre\FastExcel\FastExcel;
 
-class RoleRepository extends BaseRepository
+class MenuRepository extends BaseRepository
 {
-    public function __construct(Role $model)
+    public function __construct(Menu $model)
     {
         parent::__construct($model);
     }
@@ -66,7 +66,7 @@ class RoleRepository extends BaseRepository
     public function getAllWithFilter(array $filters = [], $chunkSize = 1000)
     {
         $query = $this->applyFilters($this->model->query(), $filters)
-                    ->select('id','name','slug','status','created_at','updated_at');
+                    ->select('id','parent_id','name','slug','is_header','status','created_at','updated_at');
 
         $results = [];
 
@@ -98,7 +98,7 @@ class RoleRepository extends BaseRepository
     public function exportFiltered(array $filters = [], $fileName = 'master.xlsx')
     {
         $query = $this->applyFilters($this->model->query(), $filters)
-                    ->select('id','name','slug','status','created_at','updated_at');
+                    ->select('id','name','slug','created_at','updated_at');
 
         $no = 1;
 
@@ -108,7 +108,8 @@ class RoleRepository extends BaseRepository
             ->export($fileName, function ($value) use (&$no) {
                 return [
                     'No'         => $no++,
-                    'Role Name'  => $value->name,
+                    'Parent Name'=> $value->parent->name,
+                    'Menu Name'  => $value->name,
                     'Slug'       => $value->slug,
                     'Status'     => $value->status ? "Active" : "Inactive",
                     'Created At' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),

@@ -2,19 +2,19 @@
 
 namespace App\Services\Setting;
 
-use App\Repositories\Setting\RoleRepository;
+use App\Repositories\Setting\MenuRepository;
 use Exception;
 use Illuminate\Support\Str;
 
-class RoleService
+class MenuService
 {
-    protected RoleRepository $dataRepository;
+    protected MenuRepository $dataRepository;
     protected $filename;
 
-    public function __construct(RoleRepository $dataRepository)
+    public function __construct(MenuRepository $dataRepository)
     {
         $this->dataRepository = $dataRepository;
-        $this->filename = "Roles.xlsx";
+        $this->filename = "Menus.xlsx";
     }
 
     public function paginateWithFilter(array $filters = [])

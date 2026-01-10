@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('s_menus', function (Blueprint $table) {
             $table->id();
+            $table->integer('parent_id')->nullable();
             $table->string('name');
             $table->string('slug');
+            $table->boolean('is_header')->default(false);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

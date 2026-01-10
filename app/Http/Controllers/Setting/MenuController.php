@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\Setting\RoleService;
+use App\Services\Setting\MenuService;
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\Setting\RoleRequest;
+use App\Http\Requests\Setting\MenuRequest;
 use Throwable;
 
-class RoleController extends Controller
+class MenuController extends Controller
 {
-    protected RoleService $dataService;
+    protected MenuService $dataService;
 
-    public function __construct(RoleService $dataService)
+    public function __construct(MenuService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -76,12 +76,12 @@ class RoleController extends Controller
             return ResponseHelper::error(
                 404,
                 $e,
-                'Data not found'
+                'Menu not found'
             );
         }
     }
 
-    public function store(RoleRequest $request)
+    public function store(MenuRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -99,7 +99,7 @@ class RoleController extends Controller
         }
     }
 
-    public function update(RoleRequest $request, $id)
+    public function update(MenuRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -141,7 +141,7 @@ class RoleController extends Controller
     {
         try {
             $filters = $request->only(['status', 'name', 'slug', 'search']);
-            $fileName = 'roles_' . date('Ymd_His') . '.xlsx';
+            $fileName = 'Menus_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

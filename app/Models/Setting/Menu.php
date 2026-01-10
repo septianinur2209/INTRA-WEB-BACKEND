@@ -17,13 +17,20 @@ class Menu extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'parent_id',
         'name',
         'slug',
-        'status'
+        'status',
+        'is_header'
     ];
 
     public function menuAccess()
     {
         return $this->belongsTo(MenuAccess::class, 'id', 'menu_id');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne(Menu::class, 'id', 'parent_id');
     }
 }
