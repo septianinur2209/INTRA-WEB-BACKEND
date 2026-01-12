@@ -21,6 +21,10 @@ return new class extends Migration
                 ->references('id')->on('s_menus')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->boolean('show')->default(false);
+            $table->boolean('create')->default(false);
+            $table->boolean('edit')->default(false);
+            $table->boolean('delete')->default(false);
             $table->timestamps();
         });
     }

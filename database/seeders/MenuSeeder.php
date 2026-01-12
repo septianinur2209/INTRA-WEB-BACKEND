@@ -13,9 +13,14 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('s_menus')->insert(
+        $menus = [
             // parent menu
             [
+                'parent_id' => null,
+                'name' => 'Dashboard',
+                'slug' => 'dashboard',
+                'is_header' => false,
+            ],[
                 'parent_id' => null,
                 'name' => 'Master',
                 'slug' => 'master',
@@ -39,21 +44,24 @@ class MenuSeeder extends Seeder
 
             // child
             [
-                'parent_id' => 3,
+                'parent_id' => 4,
                 'name' => 'User',
                 'slug' => 'user',
                 'is_header' => false,
             ],[
-                'parent_id' => 3,
+                'parent_id' => 4,
                 'name' => 'Role',
                 'slug' => 'role',
                 'is_header' => false,
             ],[
-                'parent_id' => 3,
+                'parent_id' => 4,
                 'name' => 'Menu',
                 'slug' => 'menu',
                 'is_header' => false,
             ],
-        );
+        ];
+
+        
+        DB::table('s_menus')->insert($menus);
     }
 }

@@ -49,10 +49,10 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
-
+    
     public function role()
     {
-        return $this->hasOne(Role::class, 'id', 'role_id');
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
     public function getJWTIdentifier()

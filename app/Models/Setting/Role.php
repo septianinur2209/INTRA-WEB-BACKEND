@@ -36,8 +36,13 @@ class Role extends Model
         return Carbon::parse($value)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
     }
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'id', 'role_id');
+        return $this->hasMany(User::class, 'role_id', 'id');
+    }
+
+    public function menu()
+    {
+        return $this->hasMany(MenuAccess::class, 'role_id', 'id');
     }
 }

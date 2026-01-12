@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'name' => "Superadmin",
             'nik' => "99999999",
             'email' => "superadmin@test.com",
-            'password' => Hash::make("12345678"),
+            'password' => Hash::make("password"),
             'role_id' => 1
         ]);
     }
