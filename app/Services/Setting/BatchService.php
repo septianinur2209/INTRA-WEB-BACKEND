@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Services\Setting;
+
+use App\Repositories\Setting\BatchRepository;
+use Exception;
+
+class BatchService
+{
+    protected BatchRepository $dataRepository;
+    protected $filename;
+
+    public function __construct(BatchRepository $dataRepository)
+    {
+        $this->dataRepository = $dataRepository;
+        $this->filename = "Batch.xlsx";
+    }
+
+    public function paginateWithFilter(array $filters = [])
+    {
+        $start = $filters['start'] ?? 0;
+        $length = $filters['length'] ?? 10;
+
+        return $this->dataRepository->getFiltered($filters, $start, $length);
+    }
+
+
+    public function getAllWithFilter(array $filters = [])
+    {
+        return $this->dataRepository->getAllWithFilter($filters);
+    }
+
+    public function getDropdown(array $filters)
+    {
+        return $this->dataRepository->getDropdownData($filters);
+    }
+
+    public function getById($id)
+    {
+        $data = $this->dataRepository->find($id);
+        if (!$data) {
+            throw new Exception("data not found");
+        }
+        return $data;
+    }
+
+    public function create(array $data)
+    {
+        return $this->dataRepository->create($data);
+    }
+
+    public function update($id, array $data)
+    {
+        $data = $this->dataRepository->update($id, $data);
+        if (!$data) {
+            throw new Exception("data not found");
+        }
+        return $data;
+    }
+
+    public function delete($id)
+    {
+        $deleted = $this->dataRepository->delete($id);
+        if (!$deleted) {
+            throw new Exception("data not found");
+        }
+        return $deleted;
+    }
+
+    public function export(array $filters = [], string $fileName = $this->filename)
+    {
+        return $this->dataRepository->exportFiltered($filters, $fileName);
+    }
+}

@@ -22,7 +22,7 @@ class MenuRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:255',
+                'max:225',
                 Rule::unique('s_menus', 'name')->ignore($id)
             ],
             'status' => $id ? ['required', 'boolean'] : ['sometimes', 'boolean'],

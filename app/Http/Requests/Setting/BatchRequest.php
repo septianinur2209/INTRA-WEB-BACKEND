@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class RoleRequest extends FormRequest
+class BatchRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,11 +19,12 @@ class RoleRequest extends FormRequest
         $id = $this->route('id');
 
         return [
-            'name' => [
+            'name' => [ 'required', 'string', 'max:225'],
+            'code' => [
                 'required',
                 'string',
                 'max:225',
-                Rule::unique('s_roles', 'name')->ignore($id)
+                Rule::unique('s_batches', 'code')->ignore($id)
             ],
             'status' => $id ? ['required', 'boolean'] : ['sometimes', 'boolean'],
         ];

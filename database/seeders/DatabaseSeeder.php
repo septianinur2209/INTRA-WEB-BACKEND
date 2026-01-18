@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MenuSeeder::class,
             MenuAccessRoleSuperadminSeeder::class,
+            AreaSeeder::class,
+            StatusLapanganSeeder::class,
+            StatusLOPSeeder::class,
         ]);
     }
 }

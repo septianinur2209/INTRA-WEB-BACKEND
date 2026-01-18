@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Setting;
 
-use App\Models\Setting\Menu;
+use App\Models\Setting\Batch;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use Rap2hpoutre\FastExcel\FastExcel;
 
-class MenuRepository extends BaseRepository
+class BatchRepository extends BaseRepository
 {
-    public function __construct(Menu $model)
+    public function __construct(Batch $model)
     {
         parent::__construct($model);
     }
@@ -27,15 +27,20 @@ class MenuRepository extends BaseRepository
             $query->where('name', 'like', "%{$filters['name']}%");
         }
 
-        if (!empty($filters['slug'])) {
-            $query->where('slug', 'like', "%{$filters['slug']}%");
+        if (!empty($filters['code'])) {
+            $query->where('code', 'like', "%{$filters['code']}%");
+        }
+
+        if (!empty($filters['description'])) {
+            $query->where('description', 'like', "%{$filters['description']}%");
         }
 
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
-                  ->orWhere('slug', 'like', "%$search%");
+                  ->orWhere('code', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%");
             });
         }
 
@@ -66,7 +71,7 @@ class MenuRepository extends BaseRepository
     public function getAllWithFilter(array $filters = [], $chunkSize = 1000)
     {
         $query = $this->applyFilters($this->model->query(), $filters)
-                    ->select('id','parent_id','name','slug','is_header','status','created_at','updated_at');
+                    ->select('id','name','code','description','status','created_at','updated_at');
 
         $results = [];
 
@@ -88,7 +93,7 @@ class MenuRepository extends BaseRepository
         $query = $this->applyFilters($this->model->query(), $filters);
 
         if (!empty($filters['column'])) {
-            $column = $filters['column'] === 'name' ? 'name' : 'slug';
+            $column = $filters['column'];
             return $query->distinct()->pluck($column);
         }
 
@@ -98,7 +103,7 @@ class MenuRepository extends BaseRepository
     public function exportFiltered(array $filters = [], $fileName = 'master.xlsx')
     {
         $query = $this->applyFilters($this->model->query(), $filters)
-                    ->select('id','name','slug','status','created_at','updated_at');
+                    ->select('id','name','code','description','status','created_at','updated_at');
 
         $no = 1;
 
@@ -108,25 +113,13 @@ class MenuRepository extends BaseRepository
             ->export($fileName, function ($value) use (&$no) {
                 return [
                     'No'         => $no++,
-                    'Parent Name'=> $value->parent->name,
-                    'Menu Name'  => $value->name,
-                    'Slug'       => $value->slug,
+                    'Name'       => $value->name,
+                    'Code'       => $value->cpde,
+                    'Description'=> $value->description,
                     'Status'     => $value->status ? "Active" : "Inactive",
                     'Created At' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
                     'Updated At' => Carbon::parse($value->updated_at)->format('Y-m-d H:i:s'),
                 ];
             });
     }
-
-    public function slugExists(string $slug, ?int $excludeId = null): bool
-    {
-        $query = $this->model->where('slug', $slug);
-
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        return $query->exists();
-    }
-
 }
