@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\Setting;
+namespace App\Models\Master;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Menu extends Model
+class Mitra extends Model
 {
     use HasFactory;
 
-    protected $table = "s_menus";
+    protected $table = "m_mitras";
 
     /**
      * The attributes that are mass assignable.
@@ -18,11 +18,10 @@ class Menu extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'parent_id',
         'name',
-        'slug',
+        'code',
+        'description',
         'status',
-        'is_header'
     ];
 
     public $timestamps = true;
@@ -36,15 +35,4 @@ class Menu extends Model
     {
         return Carbon::parse($value)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
     }
-
-    public function menuAccess()
-    {
-        return $this->belongsTo(MenuAccess::class, 'id', 'menu_id');
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(Menu::class, 'parent_id');
-    }
-
 }
