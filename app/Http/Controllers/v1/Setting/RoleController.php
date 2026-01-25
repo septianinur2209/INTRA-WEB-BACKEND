@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Setting;
+namespace App\Http\Controllers\v1\Setting;
 
-use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Setting\StatusLopRequest;
-use App\Services\Setting\StatusLopService;
 use Illuminate\Http\Request;
+use App\Services\Setting\RoleService;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\Setting\RoleRequest;
 use Throwable;
 
-class StatusLopController extends Controller
+class RoleController extends Controller
 {
-    protected StatusLopService $dataService;
+    protected RoleService $dataService;
 
-    public function __construct(StatusLopService $dataService)
+    public function __construct(RoleService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -21,7 +21,7 @@ class StatusLopController extends Controller
     public function index(Request $request, $perPage = 10)
     {
         try {
-            $filters = $request->only(['start','length','status','name','slug','description','search']);
+            $filters = $request->only(['start','length','status','name','slug','search']);
 
             $result = $this->dataService->paginateWithFilter($filters);
 
@@ -37,7 +37,7 @@ class StatusLopController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -76,12 +76,12 @@ class StatusLopController extends Controller
             return ResponseHelper::error(
                 404,
                 $e,
-                'Menu not found'
+                'Data not found'
             );
         }
     }
 
-    public function store(StatusLopRequest $request)
+    public function store(RoleRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class StatusLopController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(StatusLopRequest $request, $id)
+    public function update(RoleRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -140,8 +140,8 @@ class StatusLopController extends Controller
     public function export(Request $request)
     {
         try {
-            $filters = $request->only(['status', 'name', 'slug', 'description', 'search']);
-            $fileName = 'Status_LOP_' . date('Ymd_His') . '.xlsx';
+            $filters = $request->only(['status', 'name', 'slug', 'search']);
+            $fileName = 'roles_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

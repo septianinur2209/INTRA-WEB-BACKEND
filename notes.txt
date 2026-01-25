@@ -1,0 +1,50 @@
+IHLD -> number
+Tematik -> string
+PT2/PT3 -> string / boolean
+Status OSM -> string / integer
+LOKASI -> string
+JABAR/JABO -> boolean
+WITEL -> string / foreign
+STO -> string / foreign
+ID PID -> string
+ID SAP -> string
+JUMLAH ODP DRM -> number
+JUMLAH PORT DRM -> number
+NILAI DRM -> number
+JUMLAH ODP REAL -> number
+JUMLAH PORT REAL -> number
+Nilai Perijinan -> number / uang
+Nilai Material -> number / uang
+Nilai Jasa -> number / uang
+Nilai Telkom -> nilai material + jasa
+Kalkulasi Port -> if golive then port real, else port DRM
+DEV Port -> kalkulasi port - port DRM
+Status Fisik -> string (perijinan, persiapan, matdev, instalasi, finish instalasi, golive, UT, rekon, bast)
+STATUS Lapangan -> string / foreign
+Keterangan -> string
+IDSW -> string
+ODP -> string
+Nama Mitra -> string / foreign
+NOMOR MITRA -> string / foreign
+Komitment Perijinan -> date
+Tanggal Perijinan -> date
+Komit Matdev -> date
+Tanggal Matdev -> date
+Komitment Instalasi -> date
+Tanggal Instalasi -> date
+Komit FI -> date
+FINISH INSTALASI -> date
+Komit GL -> date
+GOLIVE -> date
+Pembayaran CC -> dropdown (mitra / ta)
+Tanggal Eprop -> date
+BATCH -> string
+No PO -> string
+Status IHLD -> string
+Status Tomps -> string
+Status Proyek -> string
+Telkomsel Branch -> string
+BA PRELIM -> string
+Tanggal NDE -> date
+Aging Golive -> tanggal eprop - tanggal golive
+Kategori Aging -> tanggal eprop sampai hari berjalan apakah <= 45 hari atau lebih

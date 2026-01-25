@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Setting;
+namespace App\Http\Controllers\v1\Master;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Setting\BatchRequest;
-use App\Services\Setting\BatchService;
+use App\Http\Requests\Master\MitraRequest;
+use App\Services\Master\MitraService;
 use Illuminate\Http\Request;
 use Throwable;
 
-class BatchController extends Controller
+class MitraController extends Controller
 {
-    protected BatchService $dataService;
+    protected MitraService $dataService;
 
-    public function __construct(BatchService $dataService)
+    public function __construct(MitraService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -37,7 +37,7 @@ class BatchController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -81,7 +81,7 @@ class BatchController extends Controller
         }
     }
 
-    public function store(BatchRequest $request)
+    public function store(MitraRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class BatchController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(BatchRequest $request, $id)
+    public function update(MitraRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -141,7 +141,7 @@ class BatchController extends Controller
     {
         try {
             $filters = $request->only(['status', 'name', 'code', 'description', 'search']);
-            $fileName = 'Batch_' . date('Ymd_His') . '.xlsx';
+            $fileName = 'Mitra_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

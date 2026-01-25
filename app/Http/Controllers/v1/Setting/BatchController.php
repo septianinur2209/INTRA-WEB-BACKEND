@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\v1\Setting;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Master\STORequest;
-use App\Services\Master\STOService;
+use App\Http\Requests\Setting\BatchRequest;
+use App\Services\Setting\BatchService;
 use Illuminate\Http\Request;
 use Throwable;
 
-class STOController extends Controller
+class BatchController extends Controller
 {
-    protected STOService $dataService;
+    protected BatchService $dataService;
 
-    public function __construct(STOService $dataService)
+    public function __construct(BatchService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -37,7 +37,7 @@ class STOController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -81,7 +81,7 @@ class STOController extends Controller
         }
     }
 
-    public function store(STORequest $request)
+    public function store(BatchRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class STOController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(STORequest $request, $id)
+    public function update(BatchRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -141,7 +141,7 @@ class STOController extends Controller
     {
         try {
             $filters = $request->only(['status', 'name', 'code', 'description', 'search']);
-            $fileName = 'STO_' . date('Ymd_His') . '.xlsx';
+            $fileName = 'Batch_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

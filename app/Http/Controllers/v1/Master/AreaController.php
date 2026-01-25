@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\v1\Master;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -37,7 +37,7 @@ class AreaController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -94,7 +94,7 @@ class AreaController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }

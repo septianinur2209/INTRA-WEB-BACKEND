@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Setting;
+namespace App\Http\Controllers\v1\Master;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Setting\RoleService;
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\Setting\RoleRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\STORequest;
+use App\Services\Master\STOService;
+use Illuminate\Http\Request;
 use Throwable;
 
-class RoleController extends Controller
+class STOController extends Controller
 {
-    protected RoleService $dataService;
+    protected STOService $dataService;
 
-    public function __construct(RoleService $dataService)
+    public function __construct(STOService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -21,7 +21,7 @@ class RoleController extends Controller
     public function index(Request $request, $perPage = 10)
     {
         try {
-            $filters = $request->only(['start','length','status','name','slug','search']);
+            $filters = $request->only(['start','length','status','name','slug','description','search']);
 
             $result = $this->dataService->paginateWithFilter($filters);
 
@@ -37,7 +37,7 @@ class RoleController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -76,12 +76,12 @@ class RoleController extends Controller
             return ResponseHelper::error(
                 404,
                 $e,
-                'Data not found'
+                'Menu not found'
             );
         }
     }
 
-    public function store(RoleRequest $request)
+    public function store(STORequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class RoleController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(RoleRequest $request, $id)
+    public function update(STORequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -140,8 +140,8 @@ class RoleController extends Controller
     public function export(Request $request)
     {
         try {
-            $filters = $request->only(['status', 'name', 'slug', 'search']);
-            $fileName = 'roles_' . date('Ymd_His') . '.xlsx';
+            $filters = $request->only(['status', 'name', 'code', 'description', 'search']);
+            $fileName = 'STO_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

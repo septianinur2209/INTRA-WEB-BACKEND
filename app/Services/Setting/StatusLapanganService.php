@@ -67,8 +67,9 @@ class StatusLapanganService
         return $deleted;
     }
 
-    public function export(array $filters = [], string $fileName = $this->filename)
+    public function export(array $filters = [], $fileName = null)
     {
+        $fileName = $fileName ?? $this->filename;
         return $this->dataRepository->exportFiltered($filters, $fileName);
     }
 }

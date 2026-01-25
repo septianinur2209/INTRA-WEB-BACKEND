@@ -19,6 +19,7 @@ class Area extends Model
      */
     protected $fillable = [
         'regional_id',
+        'category_witel',
         'name',
         'code',
         'description',

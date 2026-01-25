@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\v1\Setting;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Master\MitraRequest;
-use App\Services\Master\MitraService;
+use App\Http\Requests\Setting\StatusLopRequest;
+use App\Services\Setting\StatusLopService;
 use Illuminate\Http\Request;
 use Throwable;
 
-class MitraController extends Controller
+class StatusLopController extends Controller
 {
-    protected MitraService $dataService;
+    protected StatusLopService $dataService;
 
-    public function __construct(MitraService $dataService)
+    public function __construct(StatusLopService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -37,7 +37,7 @@ class MitraController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -81,7 +81,7 @@ class MitraController extends Controller
         }
     }
 
-    public function store(MitraRequest $request)
+    public function store(StatusLopRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class MitraController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(MitraRequest $request, $id)
+    public function update(StatusLopRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -140,8 +140,8 @@ class MitraController extends Controller
     public function export(Request $request)
     {
         try {
-            $filters = $request->only(['status', 'name', 'code', 'description', 'search']);
-            $fileName = 'Mitra_' . date('Ymd_His') . '.xlsx';
+            $filters = $request->only(['status', 'name', 'slug', 'description', 'search']);
+            $fileName = 'Status_LOP_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

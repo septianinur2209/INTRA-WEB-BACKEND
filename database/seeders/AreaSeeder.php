@@ -23,6 +23,11 @@ class AreaSeeder extends Seeder
         
         $regionalId = 2;
 
+        $categoryWitel = [
+            'JABO'  => ['BEKASI', 'BOGOR', 'TANGERANG', 'BANTEN', 'JAKARTA BARAT', 'JAKARTA TIMUR'],
+            'JABAR' => ['BANDUNG', 'BANDUNG BARAT', 'CIREBON', 'TASIKMALAYA', 'SUKABUMI', 'KARAWANG']
+        ];
+
         $data = [
             'BEKASI'            => ['JBB','BBL','SMH','CBG','TBL','PBY','CBR','CIK','TAR','EJI','STN','CIB','BGG','LMA','PDE','KLB','PKY','KRA','BEK'],
             'BOGOR'             => ['CJU','CTR','PAR','CBI','PAG','BOO','SPL','PMU','CSN','CLS','JSA','BJD','CRI','CAU','STL','CWI','KHL','CPS','TJH','JGL','DMG','CSR','CSE','CGD','GPI','LWL','LBI','CSL','SKJ','DEP','CNE','PCM'],
@@ -44,8 +49,18 @@ class AreaSeeder extends Seeder
             DB::table('m_regionals')->insert($regionals);
 
             foreach ($data as $areaName => $stos) {
+
+                $category = null;
+                foreach ($categoryWitel as $cat => $areas) {
+                    if (in_array($areaName, $areas)) {
+                        $category = $cat;
+                        break;
+                    }
+                }
+
                 $areaId = DB::table('m_areas')->insertGetId([
                     'regional_id' => $regionalId,
+                    'category_witel'    => $category,
                     'name'        => $areaName,
                     'code'        => strtoupper(str_replace(' ','_',$areaName)),
                     'description' => $areaName,

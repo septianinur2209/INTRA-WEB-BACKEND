@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Setting;
+namespace App\Http\Controllers\v1\Master;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Setting\MenuService;
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\Setting\MenuRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\RegionalRequest;
+use App\Services\Master\RegionalService;
+use Illuminate\Http\Request;
 use Throwable;
 
-class MenuController extends Controller
+class RegionalController extends Controller
 {
-    protected MenuService $dataService;
+    protected RegionalService $dataService;
 
-    public function __construct(MenuService $dataService)
+    public function __construct(RegionalService $dataService)
     {
         $this->dataService = $dataService;
     }
@@ -21,7 +21,7 @@ class MenuController extends Controller
     public function index(Request $request, $perPage = 10)
     {
         try {
-            $filters = $request->only(['start','length','status','name','slug','search']);
+            $filters = $request->only(['start','length','status','name','slug','description','search']);
 
             $result = $this->dataService->paginateWithFilter($filters);
 
@@ -37,7 +37,7 @@ class MenuController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
@@ -81,7 +81,7 @@ class MenuController extends Controller
         }
     }
 
-    public function store(MenuRequest $request)
+    public function store(RegionalRequest $request)
     {
         try {
             $data = $this->dataService->create($request->validated());
@@ -94,12 +94,12 @@ class MenuController extends Controller
         } catch (Throwable $e) {
             return ResponseHelper::error(
                 500,
-                $e
+                $e->getMessage()
             );
         }
     }
 
-    public function update(MenuRequest $request, $id)
+    public function update(RegionalRequest $request, $id)
     {
         try {
             $data = $this->dataService->update($id, $request->validated());
@@ -140,8 +140,8 @@ class MenuController extends Controller
     public function export(Request $request)
     {
         try {
-            $filters = $request->only(['status', 'name', 'slug', 'search']);
-            $fileName = 'Menus_' . date('Ymd_His') . '.xlsx';
+            $filters = $request->only(['status', 'name', 'code', 'description', 'search']);
+            $fileName = 'Regional_' . date('Ymd_His') . '.xlsx';
 
             $filePath = $this->dataService->export($filters, $fileName);
 

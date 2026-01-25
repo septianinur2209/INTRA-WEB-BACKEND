@@ -17,6 +17,7 @@ return new class extends Migration
                 ->references('id')->on('m_regionals')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->string('category_witel');
             $table->string('name');
             $table->string('code');
             $table->string('description')->nullable();
